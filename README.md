@@ -11,8 +11,8 @@ Este proyecto está creado con **React** y **Vite**.
 
 1. Clona el repositorio:
    ```bash
-   git clone <URL_DEL_REPOSITORIO>
-   cd <NOMBRE_DEL_PROYECTO>
+   git clone https://github.com/Legatrun/DarienTestFrontend.git
+   cd DarienTestFrontend
 
 2.Instala las dependencias:
 ```bash
