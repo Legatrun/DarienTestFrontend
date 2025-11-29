@@ -9,13 +9,11 @@ const useSocketIO = ({ spaceId = null, autoConnect = true } = {}) => {
     const [alerts, setAlerts] = useState([]);
     const [error, setError] = useState(null);
 
-
     useEffect(() => {
         if (!autoConnect) return;
 
         const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:8080';
-        console.log("Connecting to Socket.IO at:", socketUrl);
-        
+
         socketRef.current = io(socketUrl, {
             transports: ['websocket', 'polling'],
             reconnection: true,
@@ -61,7 +59,6 @@ const useSocketIO = ({ spaceId = null, autoConnect = true } = {}) => {
         const socket = socketRef.current;
 
         const handleTelemetryAll = (data) => {
-            console.log('[SOCKET] telemetry:all received', data);
             const { spaceId: sid, telemetry: tel, timestamp } = data;
             setTelemetry((prev) => ({
                 ...prev,
@@ -192,21 +189,21 @@ const useSocketIO = ({ spaceId = null, autoConnect = true } = {}) => {
     return {
         isConnected,
         error,
-        
+
         telemetry,
         reported,
         alerts,
-        
+
         getTelemetryForSpace,
         getReportedForSpace,
         getAlertsForSpace,
-        
+
         subscribeToSpace,
         unsubscribeFromSpace,
         connect,
         disconnect,
         clearAlerts,
-        
+
         socket: socketRef.current,
     };
 };

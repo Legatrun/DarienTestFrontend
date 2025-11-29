@@ -6,75 +6,71 @@ import useSocketIO from '../hooks/useSocketIO';
 
 const AdminDashboard = () => {
     const { spaces, fetchSpaces } = useReservationsStore();
-    // const {
-    //     isConnected,
-    //     telemetry,
-    //     reported,
-    //     alerts,
-    //     getTelemetryForSpace,
-    //     getAlertsForSpace,
-    //     error
-    // } = useSocketIO({ autoConnect: true });
+    const {
+        isConnected,
+        telemetry,
+        reported,
+        alerts,
+        getTelemetryForSpace,
+        getAlertsForSpace,
+        error
+    } = useSocketIO({ autoConnect: true });
 
     useEffect(() => {
         fetchSpaces();
     }, [fetchSpaces]);
 
-    const [telemetry, setTelemetry] = useState({});
-    const [reported, setReported] = useState({});
-    const [alerts, setAlerts] = useState([]);
-    const [isConnected, setIsConnected] = useState(true);
+    // const [telemetry, setTelemetry] = useState({});
+    // const [reported, setReported] = useState({});
+    // const [alerts, setAlerts] = useState([]);
+    // const [isConnected, setIsConnected] = useState(true);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const newTelemetry = {};
-            const newReported = {};
-            const newAlerts = [];
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         const newTelemetry = {};
+    //         const newReported = {};
+    //         const newAlerts = [];
 
-            spaces.forEach(space => {
-                // Telemetry random
-                const temp = 20 + Math.random() * 5;
-                const humidity = 40 + Math.random() * 20;
-                const occupancy = Math.random() > 0.5 ? 1 : 0;
-                const noise = Math.random() * 100;
+    //         spaces.forEach(space => {
+    //             const temp = 20 + Math.random() * 5;
+    //             const humidity = 40 + Math.random() * 20;
+    //             const occupancy = Math.random() > 0.5 ? 1 : 0;
+    //             const noise = Math.random() * 100;
 
-                newTelemetry[space.id] = {
-                    temperature: temp,
-                    humidity,
-                    occupancy,
-                    noiseLevel: noise,
-                    timestamp: new Date()
-                };
+    //             newTelemetry[space.id] = {
+    //                 temperature: temp,
+    //                 humidity,
+    //                 occupancy,
+    //                 noiseLevel: noise,
+    //                 timestamp: new Date()
+    //             };
 
-                // Reported random
-                newReported[space.id] = {
-                    samplingIntervalSec: 30,
-                    co2_alert_threshold: 1000,
-                    firmwareVersion: '1.0.0'
-                };
+    //             newReported[space.id] = {
+    //                 samplingIntervalSec: 30,
+    //                 co2_alert_threshold: 1000,
+    //                 firmwareVersion: '1.0.0'
+    //             };
 
-                // Generar alertas aleatorias
-                if (Math.random() < 0.3) {
-                    newAlerts.push({
-                        id: `${space.id}-${Date.now()}`,
-                        spaceId: space.id,
-                        message: 'CO2 level high',
-                        timestamp: new Date()
-                    });
-                }
-            });
+    //             if (Math.random() < 0.3) {
+    //                 newAlerts.push({
+    //                     id: `${space.id}-${Date.now()}`,
+    //                     spaceId: space.id,
+    //                     message: 'CO2 level high',
+    //                     timestamp: new Date()
+    //                 });
+    //             }
+    //         });
 
-            setTelemetry(newTelemetry);
-            setReported(newReported);
-            setAlerts(newAlerts);
-        }, 3000);
+    //         setTelemetry(newTelemetry);
+    //         setReported(newReported);
+    //         setAlerts(newAlerts);
+    //     }, 3000);
 
-        return () => clearInterval(interval);
-    }, [spaces]);
+    //     return () => clearInterval(interval);
+    // }, [spaces]);
 
-    const getTelemetryForSpace = (id) => telemetry[id] || {};
-    const getAlertsForSpace = (id) => alerts.filter(a => a.spaceId === id);
-
+    // const getTelemetryForSpace = (id) => telemetry[id] || {};
+    // const getAlertsForSpace = (id) => alerts.filter(a => a.spaceId === id);
 
     return (
         <div className="space-y-6">
@@ -106,16 +102,17 @@ const AdminDashboard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {spaces.map((space) => {
-                    const data = getTelemetryForSpace(space.id);
+                    // const data = getTelemetryForSpace(space.id);
+                    const data = Object.values(telemetry)[0];
                     const deviceState = reported[space.id];
                     const spaceAlerts = getAlertsForSpace(space.id);
 
-                    const temperature = data?.temperature ?? '--';
-                    const humidity = data?.humidity ?? '--';
+                    const temperature = data?.temp_c ?? '--';
+                    const humidity = data?.humidity_pct ?? '--';
                     const occupancy = data?.occupancy ?? '--';
-                    const noiseLevel = data?.noiseLevel ?? '--';
+                    const noiseLevel = data?.co2_ppm ?? '--';
 
-                    const isOccupied = occupancy === 'Occupied' || occupancy === true || occupancy === 1;
+                    const isOccupied = !!occupancy
                     const hasAlerts = spaceAlerts.length > 0;
 
                     return (
